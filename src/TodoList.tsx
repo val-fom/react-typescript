@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { v4 } from 'uuid';
+import styled from 'styled-components';
 
 type FormElem = React.FormEvent<HTMLFormElement>;
 
@@ -47,7 +48,7 @@ export const TodoList: React.FC<{}> = () => {
   };
 
   return (
-    <>
+    <Container>
       <form onSubmit={handleSubmit}>
         <input type="text" onChange={handleChange} required value={value} />
         <input type="submit" />
@@ -73,6 +74,14 @@ export const TodoList: React.FC<{}> = () => {
           ))}
         </ul>
       </section>
-    </>
+    </Container>
   );
 };
+
+const Container = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 30px;
+`;
