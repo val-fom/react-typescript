@@ -1,79 +1,49 @@
 import React, { useState } from 'react';
 import { v4 } from 'uuid';
 import styled from 'styled-components';
+import { Form } from './Form';
+import { List } from './List';
 
-type FormElem = React.FormEvent<HTMLFormElement>;
-
-interface Todo {
+export interface Todo {
   name: string;
   done: boolean;
   id: string;
 }
-type Todos = {
+
+export type Todos = {
   [id: string]: Todo;
 };
 
-// TODO: extract list and todo item components
 // TODO: use reducer and check list updates
 
 export const TodoList: React.FC<{}> = () => {
-  const [value, setValue] = useState<string>('');
   const [todos, setTodos] = useState<Todos>({});
 
-  const handleChange: React.ReactEventHandler = (
-    ev: React.ChangeEvent<HTMLInputElement>
-  ) => setValue(ev.target.value);
-
-  const handleSubmit = (ev: FormElem): void => {
-    ev.preventDefault();
-    setValue('');
+  const addTodo = (name: string): void => {
     const newId = v4();
     const nextTodos = {
       ...todos,
-      [newId]: { name: value, done: false, id: newId },
+      [newId]: { name, done: false, id: newId },
     };
     setTodos(nextTodos);
   };
 
-  const handleMarkDoneClick = (id: string): void => {
-    const newTodos = { ...todos };
-    newTodos[id].done = !newTodos[id].done;
+  const handleMarkDone = (todo: Todo): void => {
+    const newTodos: Todos = { ...todos };
+    newTodos[todo.id].done = !newTodos[todo.id].done;
     setTodos(newTodos);
   };
 
-  const handleDeleteClick = (id: string): void => {
-    const newTodos = { ...todos };
-    delete newTodos[id];
+  const handleDelete = (todo: Todo): void => {
+    const newTodos: Todos = { ...todos };
+    delete newTodos[todo.id];
     setTodos(newTodos);
   };
 
   return (
     <Container>
-      <form onSubmit={handleSubmit}>
-        <input type="text" onChange={handleChange} required value={value} />
-        <input type="submit" />
-      </form>
-      <section>
-        <ul>
-          {Object.keys(todos).map(key => (
-            <li key={key}>
-              {todos[key].name}
-              <button
-                type="button"
-                onClick={(): void => handleDeleteClick(key)}
-              >
-                delete
-              </button>
-              <button
-                type="button"
-                onClick={(): void => handleMarkDoneClick(key)}
-              >
-                {todos[key].done ? 'markUndone' : 'markDone'}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </section>
+      <Form onSubmit={addTodo} />
+      <List todos={todos} onDelete={handleDelete} onMarkDone={handleMarkDone} />
     </Container>
   );
 };
