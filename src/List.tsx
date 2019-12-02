@@ -5,8 +5,8 @@ import { Todos, Todo } from './TodoList';
 export const List: React.FC<{
   todos: Todos;
   onDelete: (todo: Todo) => void;
-  onMarkDone: (todo: Todo) => void;
-}> = ({ todos, onDelete, onMarkDone }) => (
+  onComplete: (todo: Todo) => void;
+}> = ({ todos, onDelete, onComplete }) => (
   <section>
     <ul>
       {Object.values(todos).map(todo => (
@@ -14,7 +14,7 @@ export const List: React.FC<{
           todo={todo}
           key={todo.id}
           onDelete={onDelete}
-          onMarkDone={onMarkDone}
+          onComplete={onComplete}
         />
       ))}
     </ul>

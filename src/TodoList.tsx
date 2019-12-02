@@ -6,7 +6,7 @@ import { List } from './List';
 
 export interface Todo {
   name: string;
-  done: boolean;
+  complete: boolean;
   id: string;
 }
 
@@ -23,14 +23,14 @@ export const TodoList: React.FC<{}> = () => {
     const newId = v4();
     const nextTodos = {
       ...todos,
-      [newId]: { name, done: false, id: newId },
+      [newId]: { name, complete: false, id: newId },
     };
     setTodos(nextTodos);
   };
 
-  const handleMarkDone = (todo: Todo): void => {
+  const handleComplete = (todo: Todo): void => {
     const newTodos: Todos = { ...todos };
-    newTodos[todo.id].done = !newTodos[todo.id].done;
+    newTodos[todo.id].complete = !newTodos[todo.id].complete;
     setTodos(newTodos);
   };
 
@@ -43,7 +43,7 @@ export const TodoList: React.FC<{}> = () => {
   return (
     <Container>
       <Form onSubmit={addTodo} />
-      <List todos={todos} onDelete={handleDelete} onMarkDone={handleMarkDone} />
+      <List todos={todos} onDelete={handleDelete} onComplete={handleComplete} />
     </Container>
   );
 };
