@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useReducer } from 'react';
 import { v4 } from 'uuid';
 import styled from 'styled-components';
 import { Form } from './Form';
@@ -14,36 +14,79 @@ export type Todos = {
   [id: string]: Todo;
 };
 
-// TODO: use reducer and check list updates
+interface State {
+  todos: Todos;
+}
 
-export const TodoList: React.FC<{}> = () => {
-  const [todos, setTodos] = useState<Todos>({});
+interface DeleteAction {
+  type: 'DELETE';
+  payload: { id: string };
+}
 
-  const addTodo = (name: string): void => {
+interface CompleteAction {
+  type: 'COMPLETE';
+  payload: { id: string };
+}
+
+interface AddAction {
+  type: 'ADD';
+  payload: { name: string };
+}
+
+const initialState = {
+  todos: {},
+};
+
+const ADD = 'ADD';
+const DELETE = 'DELETE';
+const COMPLETE = 'COMPLETE';
+
+function reducer(
+  state: State,
+  action: AddAction | DeleteAction | CompleteAction
+): State {
+  if (action.type === ADD) {
     const newId = v4();
     const nextTodos = {
-      ...todos,
-      [newId]: { name, complete: false, id: newId },
+      ...state.todos,
+      [newId]: { name: action.payload.name, complete: false, id: newId },
     };
-    setTodos(nextTodos);
-  };
+    return { todos: nextTodos };
+  }
+  if (action.type === DELETE) {
+    const nextTodos: Todos = { ...state.todos };
+    delete nextTodos[action.payload.id];
+    return { todos: nextTodos };
+  }
+  if (action.type === COMPLETE) {
+    const nextTodos: Todos = { ...state.todos };
+    nextTodos[action.payload.id].complete = !nextTodos[action.payload.id]
+      .complete;
+    return { todos: nextTodos };
+  }
+  return state;
+}
 
-  const handleComplete = (todo: Todo): void => {
-    const newTodos: Todos = { ...todos };
-    newTodos[todo.id].complete = !newTodos[todo.id].complete;
-    setTodos(newTodos);
-  };
+export const TodoList: React.FC<{}> = () => {
+  const [state, dispatch] = useReducer(reducer, initialState);
 
-  const handleDelete = (todo: Todo): void => {
-    const newTodos: Todos = { ...todos };
-    delete newTodos[todo.id];
-    setTodos(newTodos);
-  };
+  const handleAdd = (name: string): void =>
+    dispatch({ type: ADD, payload: { name } });
+
+  const handleDelete = (todo: Todo): void =>
+    dispatch({ type: DELETE, payload: { id: todo.id } });
+
+  const handleComplete = (todo: Todo): void =>
+    dispatch({ type: COMPLETE, payload: { id: todo.id } });
 
   return (
     <Container>
-      <Form onSubmit={addTodo} />
-      <List todos={todos} onDelete={handleDelete} onComplete={handleComplete} />
+      <Form onSubmit={handleAdd} />
+      <List
+        todos={state.todos}
+        onDelete={handleDelete}
+        onComplete={handleComplete}
+      />
     </Container>
   );
 };
