@@ -13,8 +13,8 @@ export const Form: React.FC<{ onSubmit: (value: string) => void }> = ({
 
   const handleSubmit = (ev: FormElem): void => {
     ev.preventDefault();
-    setValue('');
     onSubmit(value);
+    setValue('');
   };
 
   return (
