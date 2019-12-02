@@ -3,6 +3,7 @@ import { v4 } from 'uuid';
 import styled from 'styled-components';
 import { Form } from './Form';
 import { List } from './List';
+import { ADD, DELETE, COMPLETE } from './constants';
 
 export interface Todo {
   name: string;
@@ -37,10 +38,6 @@ const initialState = {
   todos: {},
 };
 
-const ADD = 'ADD';
-const DELETE = 'DELETE';
-const COMPLETE = 'COMPLETE';
-
 function reducer(
   state: State,
   action: AddAction | DeleteAction | CompleteAction
@@ -67,8 +64,13 @@ function reducer(
   return state;
 }
 
-export const TodoList: React.FC<{}> = () => {
+export function useAppState() {
   const [state, dispatch] = useReducer(reducer, initialState);
+  return [state, dispatch] as const;
+}
+
+export const TodoList: React.FC<{}> = () => {
+  const [state, dispatch] = useAppState();
 
   const handleAdd = (name: string): void =>
     dispatch({ type: ADD, payload: { name } });
