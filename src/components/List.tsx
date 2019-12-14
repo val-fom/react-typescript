@@ -1,6 +1,6 @@
 import React from 'react';
 import { Item } from './Item';
-import { Todos, Todo } from './TodoList';
+import { Todos, Todo } from '../types';
 
 export const List: React.FC<{
   todos: Todos;

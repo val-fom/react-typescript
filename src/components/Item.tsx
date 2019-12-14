@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { Todo } from './TodoList';
+import { Todo } from '../types';
 
 export const Item: React.FC<{
   todo: Todo;
